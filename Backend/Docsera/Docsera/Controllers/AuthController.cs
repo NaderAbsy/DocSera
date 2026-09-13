@@ -84,14 +84,19 @@ namespace Docsera.Controllers
 
 
 
-                using (var smtpClient = new System.Net.Mail.SmtpClient("smtp.gmail.com", 587))
+                var smtpHost = _configuration["SMTP:Host"];
+                var smtpPort = int.Parse(_configuration["SMTP:Port"] ?? "587");
+                var smtpUser = _configuration["SMTP:Username"];
+                var smtpPass = _configuration["SMTP:Password"];
+
+                using (var smtpClient = new System.Net.Mail.SmtpClient(smtpHost, smtpPort))
                 {
                     smtpClient.EnableSsl = true;
-                    smtpClient.Credentials = new NetworkCredential("docsera159@gmail.com", "REMOVED_FROM_HISTORY");
+                    smtpClient.Credentials = new NetworkCredential(smtpUser, smtpPass);
 
                     var mailMessage = new MailMessage
                     {
-                        From = new MailAddress("docsera159@gmail.com", "docsera Team"),
+                        From = new MailAddress(smtpUser, "docsera Team"),
                         Subject = "Contact Form Web",
                         Body = $"Hello {user.FirstName},<br>Please confirm your email by clicking <a href='{confirmationLink}'>here</a>.",
                         IsBodyHtml = true,
